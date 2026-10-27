@@ -111,7 +111,7 @@
             bindings = <
 &trans         &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
 &cap_macro     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
-&trans         &kp LCMD(C)  &kp LCMD(V)  &kp LCMD(X)  &kp LCMD(S)  &kp LCMD(Z)     &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
+&trans         &kp LG(C)    &kp LG(V)    &kp LG(X)    &kp LG(S)    &kp LG(Z)       &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
 &trans         &trans       &trans       &trans       &trans       &trans &none &none &trans &kp MINUS &kp JP_EQUAL &kp JP_LBRACKET &kp JP_RBRACKET &trans
                &trans       &trans       &trans       &none                    &none &trans &trans &trans
             >;
