@@ -3,7 +3,8 @@
 無線 Silakka54（nice!nano / SuperMini 互換 + ZMK）向けの個人設定です。  
 MacBook Pro で **キーボード種別=JIS日本語** のまま、かな/英数とJIS記号を使います。
 
-ベース: [vandermey/silakka54-zmk-config](https://github.com/vandermey/silakka54-zmk-config)
+- GitHub: https://github.com/mystkakogawa/silakka54-zmk-config
+- ベース: [vandermey/silakka54-zmk-config](https://github.com/vandermey/silakka54-zmk-config)
 
 ## ビルド（GitHub Actions）
 
