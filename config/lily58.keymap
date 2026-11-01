@@ -1,17 +1,15 @@
 /*
- * Silakka54 Mac向け — わかりやすさ優先キーマップ
+ * Silakka54 Mac + JIS向け（わかりやすさ優先）
  *
- * 【修飾・切替（Base）】
- *   Tab / Ctrl / Shift = 左端のいつもの列
- *   Opt / Cmd / Space  = 左親指（外側→内側）※Macに近い順
- *   英数 = 右上端（短押し）/ 長押しで LOWER（記号）
- *   かな = 右親指まん中（短押し）/ 長押しで RAISE（ショートカット）
+ * Macのキーボード種別は「JIS」推奨。
+ * Base + Shift でJISの記号が出る。ボードに無い記号は LOWER。
  *
- * 【記号 LOWER＝右上・英数を長押し】ホーム位置で:
- *   A=@  S=[  D=]  F=/  G=_  H=¥
+ * レイヤー切替（長押し兼用）:
+ *   右上端 = 英数 / 長押し LOWER
+ *   右親指まん中 = かな / 長押し RAISE
  *
- * 【ショートカット RAISE＝かな長押し】印字どおりの位置で:
- *   C=コピー  V=貼り付け  Z=元に戻す  Q=スクショ
+ * RAISE の 3/4/5 = スクショ（ファイル保存）
+ * LOWER の 3/4   = スクショ（クリップボード）
  */
 
 #include <behaviors.dtsi>
@@ -23,78 +21,117 @@
 #define LOWER   1
 #define RAISE   2
 
-#define JP_YEN   INT_YEN
-#define JP_AT    LEFT_BRACKET
-#define JP_LBRC  RIGHT_BRACKET
-#define JP_RBRC  BACKSLASH
-#define JP_UNDS  LS(INT_RO)
+// JIS記号（Mac=JISのとき）
+#define JP_YEN   INT_YEN           // ¥
+#define JP_AT    LEFT_BRACKET      // @
+#define JP_LBRC  RIGHT_BRACKET     // [
+#define JP_RBRC  BACKSLASH         // ]
+#define JP_UNDS  LS(INT_RO)        // _
+#define JP_COLN  SINGLE_QUOTE      // :
 #define JP_KANA  LANGUAGE_1
 #define JP_EISU  LANGUAGE_2
 
 / {
     macros {
-        // 範囲選択スクショ: Ctrl + Cmd + Shift + 4
-        cap_macro: cap_macro {
+        // Shift+Cmd+3 全体（ファイル）
+        ss_full: ss_full {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_press &kp LCTRL &kp LGUI &kp LSHFT>,
+                <&macro_press &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp N3>,
+                <&macro_release &kp LSHFT &kp LGUI>;
+        };
+        // Shift+Cmd+4 範囲（ファイル）
+        ss_area: ss_area {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press &kp LSHFT &kp LGUI>,
                 <&macro_tap &kp N4>,
-                <&macro_release &kp LCTRL &kp LGUI &kp LSHFT>;
+                <&macro_release &kp LSHFT &kp LGUI>;
+        };
+        // Shift+Cmd+5 ツールバー
+        ss_bar: ss_bar {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp N5>,
+                <&macro_release &kp LSHFT &kp LGUI>;
+        };
+        // Ctrl+Shift+Cmd+3 全体→クリップボード
+        ss_full_clip: ss_full_clip {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press &kp LCTRL &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp N3>,
+                <&macro_release &kp LCTRL &kp LSHFT &kp LGUI>;
+        };
+        // Ctrl+Shift+Cmd+4 範囲→クリップボード
+        ss_area_clip: ss_area_clip {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press &kp LCTRL &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp N4>,
+                <&macro_release &kp LCTRL &kp LSHFT &kp LGUI>;
+        };
+        // Shift+Cmd+4 のあと Space（ウインドウ撮影の入口）
+        ss_win: ss_win {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp N4>,
+                <&macro_release &kp LSHFT &kp LGUI>,
+                <&macro_tap &kp SPACE>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        // --------------------------------------------------
-        // Base
-        // Esc 1 2 3 4 5 | 6 7 8 9 0 英数/LOWER
-        // Tab Q W E R T | Y U I O P -
-        // Ctl A S D F G | H J K L ; '
-        // Sft Z X C V B | N M , . / Sft
-        //     Opt Cmd Space | Enter かな/RAISE Bksp
-        // --------------------------------------------------
+        // Base: 通常JIS入力（ShiftでJIS記号）
+        // 右上=英数/LOWER  右親指まん中=かな/RAISE
+        // 左親指: Opt Cmd Space
         default_layer {
             display-name = "Base";
             bindings = <
 &kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &lt LOWER JP_EISU
 &kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
-&kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp SQT
+&kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp RSHFT
                &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &lt RAISE JP_KANA &kp BSPC
             >;
         };
 
-        // --------------------------------------------------
-        // LOWER（右上・英数を長押し）
-        // ホーム段: @ [ ] / _ ¥
-        // 上段: BT / USB切替（Studio用）
-        // --------------------------------------------------
+        // LOWER: ボードに無い／取りにくい記号 + クリップボードスクショ
+        // ホーム: @ [ ] / _ ¥ :
+        // 数字3/4: スクショ→クリップボード
         lower_layer {
             display-name = "Lower";
             bindings = <
-&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &trans
-&kp F1         &kp F2       &kp F3       &kp F4       &kp F5       &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&trans         &kp AT       &kp LBKT     &kp RBKT     &kp FSLH     &kp UNDER      &kp JP_YEN &kp LPAR &kp RPAR &kp LBRC &kp RBRC &kp PIPE
-&trans         &kp EXCL     &kp AT       &kp HASH     &kp DLLR     &kp PRCNT &none &none &kp CARET &kp AMPS &kp ASTRK &kp UNDER &kp PLUS &kp JP_YEN
-               &trans       &trans       &trans       &none                    &none &trans &trans &trans
+&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &trans
+&kp F1         &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+&trans         &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp LPAR &kp RPAR &kp LBRC &kp RBRC &kp PIPE
+&trans         &kp EXCL     &kp AT       &kp HASH      &kp DLLR      &kp PRCNT &none &none &kp CARET &kp AMPS &kp ASTRK &kp UNDER &kp PLUS &kp JP_YEN
+               &trans       &trans       &trans        &none                     &none &trans &trans &trans
             >;
         };
 
-        // --------------------------------------------------
-        // RAISE（かな長押し）
-        // C=コピー V=貼付 Z=戻す Q=スクショ
-        // HJKL=矢印
-        // --------------------------------------------------
+        // RAISE: スクショ(ファイル)を3/4/5、編集短切、矢印
+        // 3=全体 4=範囲 5=ツールバー  2=ウインドウ入口
+        // Z=戻す X=切取 C=コピー V=貼付
         raise_layer {
             display-name = "Raise";
             bindings = <
-&trans         &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
-&cap_macro     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
-&trans         &trans       &trans       &trans       &trans       &trans          &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-&trans         &kp LG(Z)    &trans       &kp LG(C)    &kp LG(V)    &trans &none &none &trans &trans &trans &trans &trans &trans
-               &trans       &trans       &trans       &none                    &none &trans &trans &trans
+&trans         &trans       &ss_win      &ss_full      &ss_area      &ss_bar         &trans &trans &trans &trans &trans &trans
+&trans         &trans       &trans       &trans        &trans        &trans          &trans &trans &trans &trans &trans &trans
+&trans         &trans       &trans       &trans        &trans        &trans          &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
+&trans         &kp LG(Z)    &kp LG(X)    &kp LG(C)     &kp LG(V)     &trans &none &none &trans &trans &trans &trans &trans &trans
+               &trans       &trans       &trans        &none                     &none &trans &trans &trans
             >;
         };
 
