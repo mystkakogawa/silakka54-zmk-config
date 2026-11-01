@@ -10,7 +10,7 @@
  * CapsLock = LOWER の Ctrl位置
  *
  * RAISE 左手3段目 = 再生系・消音・音量
- * RAISE 右手全体 = テンキー
+ * RAISE 右手左4列 = テンキー（7 8 9 / / 4 5 6 * / 1 2 3 + / 0 00 . -）
  */
 
 #include <behaviors.dtsi>
@@ -95,6 +95,12 @@
                 <&macro_release &kp LSHFT &kp LGUI>,
                 <&macro_tap &kp SPACE>;
         };
+        // テンキーの「00」
+        kp_00: kp_00 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp KP_N0 &kp KP_N0>;
+        };
     };
 
     keymap {
@@ -131,15 +137,19 @@
         // 左手Q列 = 輝度・Mission等（旧F1〜F6）
         // 左手3段目 = 前へ/再生/次へ/消音/音量-/音量+
         // 左手下段 = 編集 + 矢印
-        // 右手 = テンキー
-        // 右上=層サイクルでBaseへ戻る
+        // 右手左4列 = テンキー / 5列目 = 矢印↑↓←→ / 6列目右上のみ層
+        //   7 8 9 /  ↑
+        //   4 5 6 *  ↓
+        //   1 2 3 +  ←
+        //   0 00 . - →
+        // 左手ZXCV = 戻す・切取・コピー・貼付
         raise_layer {
             display-name = "Raise";
             bindings = <
-&trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &kp KP_EQUAL &kp KP_SLASH &kp KP_ASTERISK &kp KP_MINUS &kp KP_PLUS &to DEFAULT
-&kp SLCK       &kp PAUSE_BREAK   &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MINUS &kp KP_PLUS &kp KP_SLASH
-&kp C_PREV     &kp C_PP          &kp C_NEXT   &kp C_MUTE   &kp C_VOL_DN &kp C_VOL_UP         &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_PLUS &kp KP_ASTERISK &kp KP_ENTER
-&kp LEFT       &kp DOWN          &kp UP       &kp RIGHT    &kp LG(C)    &kp LG(V) &none &none &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N0 &kp KP_DOT &kp KP_ENTER
+&trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_SLASH &kp UP &to DEFAULT
+&kp SLCK       &kp PAUSE_BREAK   &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_ASTERISK &kp DOWN &trans
+&kp C_PREV     &kp C_PP          &kp C_NEXT   &kp C_MUTE   &kp C_VOL_DN &kp C_VOL_UP         &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_PLUS &kp LEFT &trans
+&trans         &kp LG(Z)         &kp LG(X)    &kp LG(C)    &kp LG(V)    &trans &none   &none &kp KP_N0 &kp_00 &kp KP_DOT &kp KP_MINUS &kp RIGHT &trans
                &trans            &trans       &trans       &none                     &none &kp ENTER &kp JP_KANA &kp BSPC
             >;
         };
