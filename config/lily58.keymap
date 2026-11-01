@@ -22,13 +22,26 @@
 #define LOWER   1
 #define RAISE   2
 
-// JIS記号（Mac=JISのとき）
-#define JP_YEN   INT_YEN           // ¥
-#define JP_AT    LEFT_BRACKET      // @
-#define JP_LBRC  RIGHT_BRACKET     // [
-#define JP_RBRC  BACKSLASH         // ]
-#define JP_UNDS  LS(INT_RO)        // _
-#define JP_COLN  SINGLE_QUOTE      // :
+// Macキーボード種別=JIS のとき、意図した文字になるHID
+// ※ AT/LPAR/PIPE 等のUS向け別名はJISだと別文字になるので使わない
+#define JP_YEN   INT_YEN              // ¥
+#define JP_PIPE  LS(INT_YEN)          // |
+#define JP_AT    LEFT_BRACKET         // @
+#define JP_LBRC  RIGHT_BRACKET        // [
+#define JP_RBRC  BACKSLASH            // ]
+#define JP_LCBR  LS(RIGHT_BRACKET)    // {
+#define JP_RCBR  LS(BACKSLASH)        // }
+#define JP_LPRN  LS(N8)               // (
+#define JP_RPRN  LS(N9)               // )
+#define JP_UNDS  LS(INT_RO)           // _
+#define JP_COLN  SINGLE_QUOTE         // :
+#define JP_DQUO  LS(N2)               // "
+#define JP_AMPR  LS(N6)               // &
+#define JP_ASTR  LS(SINGLE_QUOTE)     // *
+#define JP_PLUS  LS(SEMICOLON)        // +
+#define JP_CIRC  EQUAL                // ^
+#define JP_TILD  LS(N0)               // ~
+#define JP_EQL   LS(MINUS)            // =
 #define JP_KANA  LANGUAGE_1
 #define JP_EISU  LANGUAGE_2
 
@@ -108,16 +121,17 @@
             >;
         };
 
-        // LOWER: ボードに無い／取りにくい記号 + クリップボードスクショ
-        // ホーム: @ [ ] / _ ¥ :
+        // LOWER: Mac=JIS向け記号 + クリップボードスクショ
+        // ホーム: @ [ ] / _ |  ¥ ( ) { } |
+        // 下段:   ! " # $ %    ^ & * _ + ~
         // 数字3/4: スクショ→クリップボード
         lower_layer {
             display-name = "Lower";
             bindings = <
 &bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &trans
 &kp F1         &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&trans         &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp LPAR &kp RPAR &kp LBRC &kp RBRC &kp PIPE
-&trans         &kp EXCL     &kp AT       &kp HASH      &kp DLLR      &kp PRCNT &none &none &kp CARET &kp AMPS &kp ASTRK &kp UNDER &kp PLUS &kp JP_YEN
+&trans         &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp JP_LPRN &kp JP_RPRN &kp JP_LCBR &kp JP_RCBR &kp JP_PIPE
+&trans         &kp EXCL     &kp JP_DQUO  &kp HASH      &kp DLLR      &kp PRCNT &none &none &kp JP_CIRC &kp JP_AMPR &kp JP_ASTR &kp JP_UNDS &kp JP_PLUS &kp JP_TILD
                &trans       &trans       &trans        &none                     &none &trans &trans &trans
             >;
         };
