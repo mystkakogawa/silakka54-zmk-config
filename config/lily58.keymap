@@ -30,17 +30,10 @@
 #define JP_RBRC  BACKSLASH            // ]
 #define JP_LCBR  LS(RIGHT_BRACKET)    // {
 #define JP_RCBR  LS(BACKSLASH)        // }
-#define JP_LPRN  LS(N8)               // (
-#define JP_RPRN  LS(N9)               // )
-#define JP_UNDS  LS(INT_RO)           // _
+#define JP_UNDS  LS(INT_RO)           // _（ろキー相当・Baseに無い）
 #define JP_COLN  SINGLE_QUOTE         // :
-#define JP_DQUO  LS(N2)               // "
-#define JP_AMPR  LS(N6)               // &
-#define JP_ASTR  LS(SINGLE_QUOTE)     // *
-#define JP_PLUS  LS(SEMICOLON)        // +
-#define JP_CIRC  EQUAL                // ^
-#define JP_TILD  LS(N0)               // ~
-#define JP_EQL   LS(MINUS)            // =
+#define JP_CIRC  EQUAL                // ^（Baseに^キーが無い）
+#define JP_GRV   LS(LEFT_BRACKET)     // `（@のShift）
 #define JP_KANA  LANGUAGE_1
 #define JP_EISU  LANGUAGE_2
 
@@ -119,15 +112,19 @@
             >;
         };
 
-        // LOWER: 記号 + クリップボードスクショ + Caps
+        // LOWER: Base+Shiftで出せない記号のみ（JIS位置寄り）+ CBスクショ + Caps
+        // 省いた例: !"#$%&'()=~+*?  → Baseの Shift+数字 / ; : / -
+        // 右手上段端: ^ ¥ |（数字列の右端相当）
+        // 右手ホーム: @ [ ] { } `（P右〜]} 相当）
+        // 右手下段右: _（ろ相当・/の右）
         // 右上=層サイクルへRAISE
         lower_layer {
             display-name = "Lower";
             bindings = <
-&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &to RAISE
+&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &kp JP_CIRC &kp JP_YEN &kp JP_PIPE &to RAISE
 &kp F1         &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&kp CAPSLOCK   &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp JP_LPRN &kp JP_RPRN &kp JP_LCBR &kp JP_RCBR &kp JP_PIPE
-&trans         &kp EXCL     &kp JP_DQUO  &kp HASH      &kp DLLR      &kp PRCNT &none &none &kp JP_CIRC &kp JP_AMPR &kp JP_ASTR &kp JP_UNDS &kp JP_PLUS &kp JP_TILD
+&kp CAPSLOCK   &trans       &trans       &trans        &trans        &trans          &kp JP_AT &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &kp JP_GRV
+&trans         &trans       &trans       &trans        &trans        &trans &none &none &trans &trans &trans &trans &trans &kp JP_UNDS
                &trans       &trans       &trans        &none                     &none &trans &kp JP_KANA &trans
             >;
         };
