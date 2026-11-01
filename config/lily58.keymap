@@ -1,12 +1,17 @@
 /*
- * Silakka54（Lily58シールド）Mac向けキーマップ
+ * Silakka54 Mac向け — わかりやすさ優先キーマップ
  *
- * 方針:
- * - キーキャップはUS印字 → 記号はUS寄りの配置を優先
- * - かな/英数は維持（Mac日本語入力用）
- * - 半角 @ ¥ / : _ は LOWER（英数長押し）に集約
- * - 全角 「」＜＞ は RAISE（かな長押し）に集約（かなONで使いやすい）
- * - Cmd / Opt / Ctrl / Shift を見失わない配置
+ * 【修飾・切替（Base）】
+ *   Tab / Ctrl / Shift = 左端のいつもの列
+ *   Opt / Cmd / Space  = 左親指（外側→内側）※Macに近い順
+ *   英数 = 右上端（短押し）/ 長押しで LOWER（記号）
+ *   かな = 右親指まん中（短押し）/ 長押しで RAISE（ショートカット）
+ *
+ * 【記号 LOWER＝右上・英数を長押し】ホーム位置で:
+ *   A=@  S=[  D=]  F=/  G=_  H=¥
+ *
+ * 【ショートカット RAISE＝かな長押し】印字どおりの位置で:
+ *   C=コピー  V=貼り付け  Z=元に戻す  Q=スクショ
  */
 
 #include <behaviors.dtsi>
@@ -18,19 +23,17 @@
 #define LOWER   1
 #define RAISE   2
 
-// Mac JISキーボード種別のとき用（全角括弧など）
-#define JP_YEN          INT_YEN
-#define JP_AT           LEFT_BRACKET
-#define JP_COLON        SINGLE_QUOTE
-#define JP_UNDS         LS(INT_RO)
-#define JP_LBRC         RIGHT_BRACKET      // [
-#define JP_RBRC         BACKSLASH          // ]
-#define JP_KANA         LANGUAGE_1
-#define JP_EISU         LANGUAGE_2
+#define JP_YEN   INT_YEN
+#define JP_AT    LEFT_BRACKET
+#define JP_LBRC  RIGHT_BRACKET
+#define JP_RBRC  BACKSLASH
+#define JP_UNDS  LS(INT_RO)
+#define JP_KANA  LANGUAGE_1
+#define JP_EISU  LANGUAGE_2
 
 / {
     macros {
-        // 範囲スクショ: Ctrl + Cmd + Shift + 4
+        // 範囲選択スクショ: Ctrl + Cmd + Shift + 4
         cap_macro: cap_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -39,61 +42,58 @@
                 <&macro_tap &kp N4>,
                 <&macro_release &kp LCTRL &kp LGUI &kp LSHFT>;
         };
-
-        // 「」用（JIS解釈の [ ]）。かなONだと全角括弧になりやすい
-        fw_open: fw_open {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_tap &kp JP_LBRC>;
-        };
-        fw_close: fw_close {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_tap &kp JP_RBRC>;
-        };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
+        // --------------------------------------------------
         // Base
-        // ESC 1 2 3 4 5 | 6 7 8 9 0 Bksp
+        // Esc 1 2 3 4 5 | 6 7 8 9 0 英数/LOWER
         // Tab Q W E R T | Y U I O P -
         // Ctl A S D F G | H J K L ; '
         // Sft Z X C V B | N M , . / Sft
-        //     Cmd 英数/LOW Space | Enter かな/RAI Bksp
+        //     Opt Cmd Space | Enter かな/RAISE Bksp
+        // --------------------------------------------------
         default_layer {
             display-name = "Base";
             bindings = <
-&kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp BSPC
+&kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &lt LOWER JP_EISU
 &kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
 &kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp SQT
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-               &kp LGUI &lt LOWER JP_EISU &kp SPACE &none      &none &kp ENTER &lt RAISE JP_KANA &kp BSPC
+               &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &lt RAISE JP_KANA &kp BSPC
             >;
         };
 
-        // LOWER: 半角記号まとめ + BT + Fn + Opt
-        // よく使う: @ : _ / ¥
+        // --------------------------------------------------
+        // LOWER（右上・英数を長押し）
+        // ホーム段: @ [ ] / _ ¥
+        // 上段: BT / USB切替（Studio用）
+        // --------------------------------------------------
         lower_layer {
             display-name = "Lower";
             bindings = <
-&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &bt BT_CLR_ALL
+&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &trans
 &kp F1         &kp F2       &kp F3       &kp F4       &kp F5       &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&kp GRAVE      &kp EXCL     &kp JP_AT    &kp HASH     &kp DLLR     &kp PRCNT       &kp CARET &kp AMPS &kp ASTRK &kp LPAR &kp RPAR &kp TILDE
-&kp LALT       &kp JP_COLON &kp JP_UNDS  &kp FSLH     &kp JP_YEN   &kp PIPE &none &none &kp UNDER &kp PLUS &kp LBRC &kp RBRC &kp JP_YEN &trans
+&trans         &kp AT       &kp LBKT     &kp RBKT     &kp FSLH     &kp UNDER      &kp JP_YEN &kp LPAR &kp RPAR &kp LBRC &kp RBRC &kp PIPE
+&trans         &kp EXCL     &kp AT       &kp HASH     &kp DLLR     &kp PRCNT &none &none &kp CARET &kp AMPS &kp ASTRK &kp UNDER &kp PLUS &kp JP_YEN
                &trans       &trans       &trans       &none                    &none &trans &trans &trans
             >;
         };
 
-        // RAISE: スクショ / コピペ / 矢印 / 全角「」＜＞
+        // --------------------------------------------------
+        // RAISE（かな長押し）
+        // C=コピー V=貼付 Z=戻す Q=スクショ
+        // HJKL=矢印
+        // --------------------------------------------------
         raise_layer {
             display-name = "Raise";
             bindings = <
 &trans         &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
 &cap_macro     &trans       &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans &trans
-&kp LALT       &kp LG(C)    &kp LG(V)    &kp LG(X)    &kp LG(S)    &kp LG(Z)       &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-&trans         &fw_open     &fw_close    &kp LS(COMMA) &kp LS(DOT) &trans &none &none &trans &trans &trans &trans &trans &trans
+&trans         &trans       &trans       &trans       &trans       &trans          &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
+&trans         &kp LG(Z)    &trans       &kp LG(C)    &kp LG(V)    &trans &none &none &trans &trans &trans &trans &trans &trans
                &trans       &trans       &trans       &none                    &none &trans &trans &trans
             >;
         };
