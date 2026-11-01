@@ -1,16 +1,16 @@
 /*
- * Silakka54 Mac + JIS向け（わかりやすさ優先）
+ * Silakka54 Mac + JIS向け
  *
  * Macのキーボード種別は「JIS」推奨。
- * Base + Shift でJISの記号が出る。ボードに無い記号は LOWER。
  *
- * レイヤー切替（長押し兼用）:
- *   右上端 = 英数 / 長押し LOWER
- *   右親指まん中 = かな / 長押し RAISE
+ * レイヤー切替（長押しなし・1キー順送り）:
+ *   右上端「層」= Base → LOWER → RAISE → Base
+ * 英数 = Aの左をタップ（長押しはCtrl）
+ * かな = 右親指まん中をタップ
+ * CapsLock = LOWER の Ctrl位置
  *
- * RAISE の 3/4/5 = スクショ（ファイル保存）
- * RAISE の Q列   = MBPの F1〜F12 相当（輝度・音量など）
- * LOWER の 3/4   = スクショ（クリップボード）
+ * RAISE 左手3段目 = 再生系・消音・音量
+ * RAISE 右手全体 = テンキー
  */
 
 #include <behaviors.dtsi>
@@ -23,7 +23,6 @@
 #define RAISE   2
 
 // Macキーボード種別=JIS のとき、意図した文字になるHID
-// ※ AT/LPAR/PIPE 等のUS向け別名はJISだと別文字になるので使わない
 #define JP_YEN   INT_YEN              // ¥
 #define JP_PIPE  LS(INT_YEN)          // |
 #define JP_AT    LEFT_BRACKET         // @
@@ -47,7 +46,6 @@
 
 / {
     macros {
-        // Shift+Cmd+3 全体（ファイル）
         ss_full: ss_full {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -56,7 +54,6 @@
                 <&macro_tap &kp N3>,
                 <&macro_release &kp LSHFT &kp LGUI>;
         };
-        // Shift+Cmd+4 範囲（ファイル）
         ss_area: ss_area {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -65,7 +62,6 @@
                 <&macro_tap &kp N4>,
                 <&macro_release &kp LSHFT &kp LGUI>;
         };
-        // Shift+Cmd+5 ツールバー
         ss_bar: ss_bar {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -74,7 +70,6 @@
                 <&macro_tap &kp N5>,
                 <&macro_release &kp LSHFT &kp LGUI>;
         };
-        // Ctrl+Shift+Cmd+3 全体→クリップボード
         ss_full_clip: ss_full_clip {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -83,7 +78,6 @@
                 <&macro_tap &kp N3>,
                 <&macro_release &kp LCTRL &kp LSHFT &kp LGUI>;
         };
-        // Ctrl+Shift+Cmd+4 範囲→クリップボード
         ss_area_clip: ss_area_clip {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -92,7 +86,6 @@
                 <&macro_tap &kp N4>,
                 <&macro_release &kp LCTRL &kp LSHFT &kp LGUI>;
         };
-        // Shift+Cmd+4 のあと Space（ウインドウ撮影の入口）
         ss_win: ss_win {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -107,50 +100,47 @@
     keymap {
         compatible = "zmk,keymap";
 
-        // Base: 通常JIS入力（ShiftでJIS記号）
-        // 右上=英数/LOWER  右親指まん中=かな/RAISE
-        // 左親指: Opt Cmd Space
+        // Base
+        // 右上=層サイクルへLOWER / A左=英数(タップ)・Ctrl(長押し) / 右親指まん中=かな
         default_layer {
             display-name = "Base";
             bindings = <
-&kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &lt LOWER JP_EISU
+&kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &to LOWER
 &kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
-&kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
+&mt LCTRL JP_EISU &kp A &kp S &kp D &kp F &kp G                      &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-               &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &lt RAISE JP_KANA &kp BSPC
+               &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &kp JP_KANA &kp BSPC
             >;
         };
 
-        // LOWER: Mac=JIS向け記号 + クリップボードスクショ
-        // ホーム: @ [ ] / _ |  ¥ ( ) { } |
-        // 下段:   ! " # $ %    ^ & * _ + ~
-        // 数字3/4: スクショ→クリップボード
+        // LOWER: 記号 + クリップボードスクショ + Caps
+        // 右上=層サイクルへRAISE
         lower_layer {
             display-name = "Lower";
             bindings = <
-&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &trans
+&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &out OUT_USB &out OUT_BLE &trans &trans &trans &to RAISE
 &kp F1         &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&trans         &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp JP_LPRN &kp JP_RPRN &kp JP_LCBR &kp JP_RCBR &kp JP_PIPE
+&kp CAPSLOCK   &kp JP_AT    &kp JP_LBRC  &kp JP_RBRC   &kp FSLH      &kp JP_UNDS     &kp JP_YEN &kp JP_LPRN &kp JP_RPRN &kp JP_LCBR &kp JP_RCBR &kp JP_PIPE
 &trans         &kp EXCL     &kp JP_DQUO  &kp HASH      &kp DLLR      &kp PRCNT &none &none &kp JP_CIRC &kp JP_AMPR &kp JP_ASTR &kp JP_UNDS &kp JP_PLUS &kp JP_TILD
-               &trans       &trans       &trans        &none                     &none &trans &trans &trans
+               &trans       &trans       &trans        &none                     &none &trans &kp JP_KANA &trans
             >;
         };
 
         // RAISE:
-        // 数字2〜5 = スクショ
-        // Q列 = MBP F1〜F12 相当（左6 + 右6）
-        //   F1輝度- F2輝度+（Mac向けに F14/F15。C_BRI_* は効かない機種あり）
-        //   F3Mission F4Spotlight F5音声 F6Launchpad
-        //   F7前へ F8再生 F9次へ F10消音 F11音量- F12音量+
-        // Z戻す X切取 Cコピー V貼付 / HJKL矢印
+        // 左手数字2〜5 = スクショ
+        // 左手Q列 = 輝度・Mission等（旧F1〜F6）
+        // 左手3段目 = 前へ/再生/次へ/消音/音量-/音量+
+        // 左手下段 = 編集 + 矢印
+        // 右手 = テンキー
+        // 右上=層サイクルでBaseへ戻る
         raise_layer {
             display-name = "Raise";
             bindings = <
-&trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &trans &trans &trans &trans &trans &trans
-&kp F14        &kp F15           &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp C_PREV &kp C_PP &kp C_NEXT &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP
-&trans         &trans            &trans       &trans       &trans       &trans               &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-&trans         &kp LG(Z)         &kp LG(X)    &kp LG(C)    &kp LG(V)    &trans &none   &none &trans &trans &trans &trans &trans &trans
-               &trans            &trans       &trans       &none                     &none &trans &trans &trans
+&trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &kp KP_EQUAL &kp KP_SLASH &kp KP_ASTERISK &kp KP_MINUS &kp KP_PLUS &to DEFAULT
+&kp SLCK       &kp PAUSE_BREAK   &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MINUS &kp KP_PLUS &kp KP_SLASH
+&kp C_PREV     &kp C_PP          &kp C_NEXT   &kp C_MUTE   &kp C_VOL_DN &kp C_VOL_UP         &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_PLUS &kp KP_ASTERISK &kp KP_ENTER
+&kp LEFT       &kp DOWN          &kp UP       &kp RIGHT    &kp LG(C)    &kp LG(V) &none &none &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N0 &kp KP_DOT &kp KP_ENTER
+               &trans            &trans       &trans       &none                     &none &kp ENTER &kp JP_KANA &kp BSPC
             >;
         };
 
