@@ -38,6 +38,18 @@
 #define JP_EISU  LANGUAGE_2
 
 / {
+    behaviors {
+        // 英数兼用: タップ優先・判定短め（鈍さを減らす）
+        mt_eisu: mt_eisu {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <120>;
+            quick-tap-ms = <150>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
     macros {
         ss_full: ss_full {
             compatible = "zmk,behavior-macro";
@@ -106,7 +118,7 @@
             bindings = <
 &kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &to LOWER
 &kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
-&mt LCTRL JP_EISU &kp A &kp S &kp D &kp F &kp G                      &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
+&mt_eisu LCTRL JP_EISU &kp A &kp S &kp D &kp F &kp G                 &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp RSHFT
                &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &kp JP_KANA &kp BSPC
             >;
