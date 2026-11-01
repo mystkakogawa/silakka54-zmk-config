@@ -9,6 +9,7 @@
  *   右親指まん中 = かな / 長押し RAISE
  *
  * RAISE の 3/4/5 = スクショ（ファイル保存）
+ * RAISE の Q列   = MBPの F1〜F12 相当（輝度・音量など）
  * LOWER の 3/4   = スクショ（クリップボード）
  */
 
@@ -121,17 +122,20 @@
             >;
         };
 
-        // RAISE: スクショ(ファイル)を3/4/5、編集短切、矢印
-        // 3=全体 4=範囲 5=ツールバー  2=ウインドウ入口
-        // Z=戻す X=切取 C=コピー V=貼付
+        // RAISE:
+        // 数字2〜5 = スクショ
+        // Q列 = MBP F1〜F12 相当（左6 + 右6）
+        //   F1輝度- F2輝度+ F3Mission F4Spotlight F5音声 F6Launchpad
+        //   F7前へ F8再生 F9次へ F10消音 F11音量- F12音量+
+        // Z戻す X切取 Cコピー V貼付 / HJKL矢印
         raise_layer {
             display-name = "Raise";
             bindings = <
-&trans         &trans       &ss_win      &ss_full      &ss_area      &ss_bar         &trans &trans &trans &trans &trans &trans
-&trans         &trans       &trans       &trans        &trans        &trans          &trans &trans &trans &trans &trans &trans
-&trans         &trans       &trans       &trans        &trans        &trans          &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-&trans         &kp LG(Z)    &kp LG(X)    &kp LG(C)     &kp LG(V)     &trans &none &none &trans &trans &trans &trans &trans &trans
-               &trans       &trans       &trans        &none                     &none &trans &trans &trans
+&trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &trans &trans &trans &trans &trans &trans
+&kp C_BRI_DEC  &kp C_BRI_INC     &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp C_PREV &kp C_PP &kp C_NEXT &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP
+&trans         &trans            &trans       &trans       &trans       &trans               &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
+&trans         &kp LG(Z)         &kp LG(X)    &kp LG(C)    &kp LG(V)    &trans &none   &none &trans &trans &trans &trans &trans &trans
+               &trans            &trans       &trans       &none                     &none &trans &trans &trans
             >;
         };
 
