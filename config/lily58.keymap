@@ -1,7 +1,9 @@
 /*
- * Silakka54 Mac + JIS向け
+ * Silakka54 Mac + JIS向け（記号は Windows JIS の出し方に寄せる）
  *
  * Macのキーボード種別は「JIS」推奨。
+ * ` = LOWER + Shift + @
+ * \ = LOWER + Shift + _
  *
  * レイヤー切替（長押しなし・1キー順送り）:
  *   右親指外側「レイヤー」= Base → LOWER → RAISE → Base
@@ -37,13 +39,31 @@
 #define JP_LCBR  LS(RIGHT_BRACKET)    // {
 #define JP_RCBR  LS(BACKSLASH)        // }
 #define JP_UNDS  LS(INT_RO)           // _（ろキー相当・Baseに無い）
+#define JP_BSLS  INT_RO               // \（Windows JIS: Shift+_）
 #define JP_COLN  SINGLE_QUOTE         // :
 #define JP_CIRC  EQUAL                // ^（Baseに^キーが無い）
-#define JP_GRV   LS(LEFT_BRACKET)     // `（@のShift）
+#define JP_GRV   LS(LEFT_BRACKET)     // `（Windows JIS: Shift+@）
 #define JP_KANA  LANGUAGE_1
 #define JP_EISU  LANGUAGE_2
 
 / {
+    behaviors {
+        // @ / `（Shiftでバッククォート）
+        jp_at_grv: jp_at_grv {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp JP_AT>, <&kp JP_GRV>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        // _ / \（Shiftでバックスラッシュ・Windows JIS寄せ）
+        jp_unds_bs: jp_unds_bs {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp JP_UNDS>, <&kp JP_BSLS>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+    };
+
     macros {
         ss_full: ss_full {
             compatible = "zmk,behavior-macro";
@@ -118,12 +138,12 @@
             >;
         };
 
-        // LOWER: Base+Shiftで出せない記号のみ（JIS位置寄り）+ CBスクショ + Caps
+        // LOWER: Base+Shiftで出せない記号のみ（Windows JIS寄せ）+ CBスクショ + Caps
         // 省いた例: !"#$%&'()=~+*?  → Baseの Shift+数字 / ; : / -
-        // | は Shift+¥（専用キーなし）
+        // | は Shift+¥ ／ ` は Shift+@ ／ \ は Shift+_（専用キーなし）
         // 右手上段: JIS数字列右端寄りに ^ ¥（⌫の直前）
-        // 右手ホーム: @ [ ] { } `（P右〜]} 相当）
-        // 右手下段右: _（ろ相当・/の右）
+        // 右手ホーム: @ [ ] { }（` は Shift+@）
+        // 右手下段右: _（\ は Shift+_）
         // Tab位置は常にTab／F1はCaps右（F1〜F12欠番なし）
         // 左手4段目 V/B = USB / BLE（左手だけで出力切替）
         // 右上=BS / 右親指外側=レイヤー→RAISE
@@ -132,8 +152,8 @@
             bindings = <
 &bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &trans &trans &trans &kp JP_CIRC &kp JP_YEN &kp BSPC
 &kp TAB        &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&kp CAPSLOCK   &kp F1       &trans       &trans        &trans        &trans          &kp JP_AT &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &kp JP_GRV
-&kp LSHFT      &trans       &trans       &trans        &out OUT_USB  &out OUT_BLE &none &none &trans &trans &trans &trans &kp JP_UNDS &kp JP_EISU
+&kp CAPSLOCK   &kp F1       &trans       &trans        &trans        &trans          &jp_at_grv &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &trans
+&kp LSHFT      &trans       &trans       &trans        &out OUT_USB  &out OUT_BLE &none &none &trans &trans &trans &trans &jp_unds_bs &kp JP_EISU
                &trans       &trans       &trans        &none                     &none &trans &kp JP_KANA &to RAISE
             >;
         };
