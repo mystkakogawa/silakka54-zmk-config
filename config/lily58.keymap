@@ -120,17 +120,19 @@
 
         // LOWER: Base+Shiftで出せない記号のみ（JIS位置寄り）+ CBスクショ + Caps
         // 省いた例: !"#$%&'()=~+*?  → Baseの Shift+数字 / ; : / -
-        // 右手上段端: ^ ¥ |（数字列の右端相当）
+        // | は Shift+¥（専用キーなし）
+        // 右手上段: JIS数字列右端寄りに ^ ¥（⌫の直前）
         // 右手ホーム: @ [ ] { } `（P右〜]} 相当）
         // 右手下段右: _（ろ相当・/の右）
+        // Tab位置は常にTab／F1はCaps右（F1〜F12欠番なし）
         // 左手4段目 V/B = USB / BLE（左手だけで出力切替）
         // 右上=BS / 右親指外側=レイヤー→RAISE
         lower_layer {
             display-name = "Lower";
             bindings = <
-&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &kp JP_CIRC &kp JP_YEN &kp JP_PIPE &trans &trans &kp BSPC
+&bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &trans &trans &trans &kp JP_CIRC &kp JP_YEN &kp BSPC
 &kp TAB        &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&kp CAPSLOCK   &trans       &trans       &trans        &trans        &trans          &kp JP_AT &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &kp JP_GRV
+&kp CAPSLOCK   &kp F1       &trans       &trans        &trans        &trans          &kp JP_AT &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &kp JP_GRV
 &kp LSHFT      &trans       &trans       &trans        &out OUT_USB  &out OUT_BLE &none &none &trans &trans &trans &trans &kp JP_UNDS &kp JP_EISU
                &trans       &trans       &trans        &none                     &none &trans &kp JP_KANA &to RAISE
             >;
