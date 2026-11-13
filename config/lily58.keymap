@@ -13,8 +13,9 @@
  * Ctrl = Aの左（Base）
  * Caps = LOWER の左端（A左）
  * かな = 右親指まん中
- * Tab = Base/LOWER/RAISE とも物理Tab位置（RAISEは右手テンキー横にも配置）
- * RAISE の B = 輝度-（やり直しは Shift+戻す＝Shift+⌘+Z）
+ * Tab = 短押しTab（全層）／長押し = Base・LOWERでF1、RAISEで輝度-
+ *   RAISE右手↓右のTabは短押しのみ（テンキー用）
+ * やり直しは Shift+戻す（Shift+⌘+Z）
  * LOWER 左手4段目 V/B = USB強制 / BLE強制（左手だけで出力切替）
  *
  * RAISE 左手3段目 = 再生系・消音・音量
@@ -48,6 +49,15 @@
 
 / {
     behaviors {
+        // 短押し優先の hold-tap（第1引数=長押し、第2引数=短押し）
+        ht_tab: ht_tab {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <150>;
+            bindings = <&kp>, <&kp>;
+        };
         // @ / `（Shiftでバッククォート）
         jp_at_grv: jp_at_grv {
             compatible = "zmk,behavior-mod-morph";
@@ -131,7 +141,7 @@
             display-name = "Base";
             bindings = <
 &kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp BSPC
-&kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
+&ht_tab F1 TAB &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
 &kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp JP_EISU
                &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &kp JP_KANA &to LOWER
@@ -144,15 +154,15 @@
         // 右手上段: JIS数字列右端寄りに ^ ¥（⌫の直前）
         // 右手ホーム: @ [ ] { }（` は Shift+@）
         // 右手下段右: _（\ は Shift+_）
-        // Tab位置は常にTab／F1はCaps右（F1〜F12欠番なし）
+        // Tab短押し=Tab／長押し=F1（F2〜F12は従来どおり）
         // 左手4段目 V/B = USB / BLE（左手だけで出力切替）
         // 右上=BS / 右親指外側=レイヤー→RAISE
         lower_layer {
             display-name = "Lower";
             bindings = <
 &bt BT_CLR     &bt BT_SEL 0 &bt BT_SEL 1 &ss_full_clip &ss_area_clip &bt BT_SEL 4    &trans &trans &trans &kp JP_CIRC &kp JP_YEN &kp BSPC
-&kp TAB        &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-&kp CAPSLOCK   &kp F1       &trans       &trans        &trans        &trans          &jp_at_grv &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &trans
+&ht_tab F1 TAB &kp F2       &kp F3       &kp F4        &kp F5        &kp F6          &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+&kp CAPSLOCK   &trans       &trans       &trans        &trans        &trans          &jp_at_grv &kp JP_LBRC &kp JP_RBRC &kp JP_LCBR &kp JP_RCBR &trans
 &kp LSHFT      &trans       &trans       &trans        &out OUT_USB  &out OUT_BLE &none &none &trans &trans &trans &trans &jp_unds_bs &kp JP_EISU
                &trans       &trans       &trans        &none                     &none &trans &kp JP_KANA &to RAISE
             >;
@@ -160,22 +170,21 @@
 
         // RAISE:
         // 左手数字2〜5 = スクショ
-        // 左手Q列 = Tab・輝度+・Mission等（Tabは全層共通／輝度-はBへ）
+        // 左手Q列 = Tab長押し=輝度-／輝度+・Mission等
         // 左手3段目 = 前へ/再生/次へ/消音/音量-/音量+
-        // 左手下段 = 編集 + 矢印
-        // 右手左4列 = テンキー / 5列目 = 矢印↑↓←→ / ↓右 = Tab / 右上=BS / 親指外側=レイヤー→Base
+        // 左手下段 = 編集（やり直しは Shift+戻す）
+        // 右手左4列 = テンキー / 5列目 = 矢印↑↓←→ / ↓右 = Tab短押し / 右上=BS
         //   7 8 9 /  ↑
         //   4 5 6 *  ↓ Tab
         //   1 2 3 +  ←
         //   0 00 . - →
-        // 左手ZXCV = 戻す・切取・コピー・貼付 / B = 輝度-（やり直しは Shift+戻す）
         raise_layer {
             display-name = "Raise";
             bindings = <
 &trans         &trans            &ss_win      &ss_full     &ss_area     &ss_bar              &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_SLASH &kp UP &kp BSPC
-&kp TAB        &kp PAUSE_BREAK   &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_ASTERISK &kp DOWN &kp TAB
+&ht_tab SLCK TAB &kp PAUSE_BREAK &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS &kp C_AC_SEARCH &kp C_VOICE_COMMAND &kp C_AC_DESKTOP_SHOW_ALL_APPLICATIONS    &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_ASTERISK &kp DOWN &kp TAB
 &kp C_PREV     &kp C_PP          &kp C_NEXT   &kp C_MUTE   &kp C_VOL_DN &kp C_VOL_UP         &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_PLUS &kp LEFT &trans
-&kp LSHFT      &kp LG(Z)         &kp LG(X)    &kp LG(C)    &kp LG(V)    &kp SLCK &none &none &kp KP_N0 &kp_00 &kp KP_DOT &kp KP_MINUS &kp RIGHT &kp JP_EISU
+&kp LSHFT      &kp LG(Z)         &kp LG(X)    &kp LG(C)    &kp LG(V)    &trans &none &none &kp KP_N0 &kp_00 &kp KP_DOT &kp KP_MINUS &kp RIGHT &kp JP_EISU
                &trans            &trans       &trans       &none                     &none &kp ENTER &kp JP_KANA &to DEFAULT
             >;
         };
