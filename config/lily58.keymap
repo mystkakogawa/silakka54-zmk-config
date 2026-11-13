@@ -13,7 +13,7 @@
  * Ctrl = Aの左（Base）
  * Caps = LOWER の左端（A左）
  * かな = 右親指まん中
- * Tab = 短押しTab（全層）／長押し = Base・LOWERでF1、RAISEで輝度-
+ * Tab = 短押しTab（全層）／長押し = LOWERでF1、RAISEで輝度-（Baseは長押しなし）
  *   RAISE右手↓右のTabは短押しのみ（テンキー用）
  * やり直しは Shift+戻す（Shift+⌘+Z）
  * LOWER 左手4段目 V/B = USB強制 / BLE強制（左手だけで出力切替）
@@ -141,7 +141,7 @@
             display-name = "Base";
             bindings = <
 &kp ESC        &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp BSPC
-&ht_tab F1 TAB &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
+&kp TAB        &kp Q  &kp W  &kp E  &kp R  &kp T                     &kp Y  &kp U  &kp I  &kp O  &kp P  &kp MINUS
 &kp LCTRL      &kp A  &kp S  &kp D  &kp F  &kp G                     &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp JP_COLN
 &kp LSHFT      &kp Z  &kp X  &kp C  &kp V  &kp B  &none        &none &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH &kp JP_EISU
                &kp LALT &kp LGUI &kp SPACE &none                 &none &kp ENTER &kp JP_KANA &to LOWER
