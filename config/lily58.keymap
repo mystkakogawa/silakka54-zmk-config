@@ -40,7 +40,8 @@
 #define JP_LCBR  LS(RIGHT_BRACKET)    // {
 #define JP_RCBR  LS(BACKSLASH)        // }
 #define JP_UNDS  LS(INT_RO)           // _（ろキー相当・Baseに無い）
-#define JP_BSLS  INT_RO               // \（Windows JIS: Shift+_）
+// Mac JIS では \ は ⌥+¥。INT_RO（Windowsの\）では Mac に \ が出ない
+#define JP_BSLS  LA(INT_YEN)          // \（Mac: Option+¥／操作は Shift+_）
 #define JP_COLN  SINGLE_QUOTE         // :
 #define JP_CIRC  EQUAL                // ^（Baseに^キーが無い）
 #define JP_GRV   LS(LEFT_BRACKET)     // `（Windows JIS: Shift+@）
@@ -65,7 +66,8 @@
             bindings = <&kp JP_AT>, <&kp JP_GRV>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
-        // _ / \（Shiftでバックスラッシュ・Windows JIS寄せ）
+        // _ / \（見た目は Windows JIS: Shift+_ → \）
+        // Mac 実体は Option+¥ を送る（INT_RO だと Mac では \ にならない）
         jp_unds_bs: jp_unds_bs {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
